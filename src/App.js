@@ -9,9 +9,11 @@ import {
   Form,
   FormLayout,
   TextField,
-  Layout
+  Layout,
+  Button
 } from '@shopify/polaris'
 import { ArrowLeftMinor, ComposeMajor } from '@shopify/polaris-icons';
+import { v4 as uuidv4 } from 'uuid';
 
 function App() {
   const [text, setText] = useState('');
@@ -21,6 +23,7 @@ function App() {
   const [isMakingDiary, setIsMakingDiary] = useState(false);
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
+  const [diaryList, setDiaryList] = useState([]);
 
   const handleTextChange = useCallback(function(value){
     setText(value);
@@ -46,7 +49,7 @@ function App() {
 
   const handleTitleChange = useCallback(function(value){
     setTitle(value);
-  }, [])
+  }, []);
 
   const handleBodyChange = useCallback(function(value){
     setBody(value)
@@ -58,7 +61,22 @@ function App() {
 
   const handleBodyClear = useCallback(function(){
     setBody('');
-  }, [])
+  }, []);
+
+  const handleSubmit = useCallback(function(){
+    setDiaryList(prevList => [...prevList, { title, body, id: uuidv4() }]);
+    setTitle('');
+    setBody('');
+    handleMakingDiaryToggle();
+  }, [title, body, handleMakingDiaryToggle]);
+
+  const handleDeleteDiary = useCallback(function(id){
+    const newDiaryList = diaryList.filter(function(diary){
+      return diary.id !== id
+    });
+
+    setDiaryList(newDiaryList);
+  }, [diaryList]);
 
   const changePageBtn = !isMakingDiary ? {
     label: 'Making diary',
@@ -105,7 +123,6 @@ function App() {
     />
   );
 
-
   const topBarMarkUp = (
     <TopBar
       showNavigationToggle
@@ -128,7 +145,7 @@ function App() {
     </Navigation>
   );
 
-  const cardMarkUp = (
+  const _mainPage = !diaryList.length ? (
     <Card sectioned>
       <EmptyState 
         image="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png"
@@ -139,25 +156,43 @@ function App() {
              handleMakingDiaryToggle();
            }
         }}
+        fullWidth
       >
         <p>
           Write your amazing daily life, your journey and amazing things you have done today and let the world know who your really are!!
         </p>
       </EmptyState>
     </Card>
+  ): (
+    <Card title="Three recent diaries" sectioned>
+      { diaryList.map(function(diary, index){
+        return index >= diaryList.length - 3 && (
+          <Card.Section 
+            title={ diary.title }
+            actions={[
+              { content: 'Delete', onAction: handleDeleteDiary.bind(this, diary.id)}
+            ]}
+            key={ diary.id }
+          >
+            <p>{ diary.body }</p>
+          </Card.Section>
+        );
+      })}
+    </Card>
   );
 
   const diaryMarkUp = (
     <Layout sectioned>
       <Layout.AnnotatedSection
-        title="title"
-        description="Description"
+        title="Diary details"
+        description="You can write your amazing story by giving it a title and tell us in detail in the body section."
       >
         <Card sectioned>
-          <Form>
+          <Form onSubmit={ handleSubmit }>
             <FormLayout>
-              <TextField placeholder="Title" value={ title } onChange={ handleTitleChange } clearButton onClearButtonClick={ handleTitleClear } autoComplete="off"/>
+              <TextField placeholder="Title" value={ title } onChange={ handleTitleChange } clearButton onClearButtonClick={ handleTitleClear }/>
               <TextField placeholder="Body" multiline={ 10 } value={ body } onChange={ handleBodyChange } clearButton onClearButtonClick={ handleBodyClear }/>
+              <Button submit>Save diary</Button>
             </FormLayout>
           </Form>
         </Card>
@@ -165,7 +200,7 @@ function App() {
     </Layout>
   );
 
-  const mainPage = isMakingDiary ? diaryMarkUp : cardMarkUp
+  const mainPage = isMakingDiary ? diaryMarkUp : _mainPage;
 
   return (
     <div>

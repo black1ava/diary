@@ -1,5 +1,6 @@
 import React, { useState, useCallback} from 'react'
-import { Frame, TopBar, ActionList, Navigation } from '@shopify/polaris'
+import { Frame, TopBar, ActionList, Navigation } from '@shopify/polaris';
+import { HomeMajor, ComposeMajor } from '@shopify/polaris-icons';
 
 function FramePage(props) {
   const [userMenuToggle, setUserMenuToggle] = useState(false);
@@ -30,7 +31,7 @@ function FramePage(props) {
       initials="T"
       actions={[
         {
-          items:[{ content: 'Action 1'}, { content: 'Action 2'}]
+          items: [{ content: 'Action 1'}, { content: 'Action 2'}]
         },
         { 
           items: [{ content: 'Other Actions'}] 
@@ -70,23 +71,25 @@ function FramePage(props) {
     />
   );
 
-    const navigationMarkUp = (
-      <Navigation location="/diary">
-        <Navigation.Section 
-          items={[
-            {
-              url: '/',
-              label: 'Home',
-              selected: false
-            },
-            {
-              url: '/diaries',
-              label: 'Write diary'
-            }
-          ]}
-        />
-      </Navigation>
-    );
+  const navigationMarkUp = (
+    <Navigation location="/diary">
+      <Navigation.Section 
+        items={[
+          {
+            url: '/',
+            label: 'Home',
+            icon: HomeMajor,
+            selected: false
+          },
+          {
+            url: '/diaries',
+            label: 'Write diary',
+            icon: ComposeMajor
+          }
+        ]}
+      />
+    </Navigation>
+  );
 
   return (
     <div>

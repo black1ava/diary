@@ -83,7 +83,7 @@ function DiaryPage() {
               <TextField value={ description } placeholder="Description" multiline={ 10 } onChange={ handleDescriptionChange }/>   
               { toastMarkUp }
               <ButtonGroup>
-                <Button submit>Save Diary</Button>
+                <Button submit primary>Save Diary</Button>
                 { modalMarkUp }
               </ButtonGroup>
             </FormLayout>

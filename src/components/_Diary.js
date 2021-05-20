@@ -7,19 +7,19 @@ import { Card } from '@shopify/polaris'
 
 function _Diary() {
   const { title } = useParams();
-  const [diary, setDiary] = useState([]);
+  const [diary, setDiary] = useState(null);
 
   useEffect(function(){
     axios.get(`http://localhost:4000/v1/getDiary/${ title }`)
       .then(response => {
-        setDiary(prevDiary => [...prevDiary, response.data]);
+        setDiary(response.data);
       })
       .catch(err => console.error(err));
   }, [title]);
 
   const diaryPage =  (
     <Card>
-      { diary.map(d => <Diary key={ d._id} diary={ d } button={ false }/>)}
+      { diary && <Diary key={ diary._id} diary={ diary } button={ false }/> }
     </Card>
   );
 

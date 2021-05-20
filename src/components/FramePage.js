@@ -1,12 +1,22 @@
-import React, { useState, useCallback} from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { Frame, TopBar, ActionList, Navigation } from '@shopify/polaris';
 import { HomeMajor, ComposeMajor } from '@shopify/polaris-icons';
+import axios from 'axios';
 
 function FramePage(props) {
   const [userMenuToggle, setUserMenuToggle] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [searchResultsVisible, setSearchResultsVisible] = useState(false);
   const [mobileNavigationToggle, setMobileNavigationToggle] = useState(false);
+  const [actionListItems, setActionListItems] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:4000/v1/getDiaries')
+      .then(response => {
+        response.data.forEach(d => setActionListItems(items => [...items, { content: d.title, url: `/diary/${ d.title }` } ] ));
+      })
+      .catch(err => console.error(err));
+  }, []);
 
   const handleUserMenuToggle = useCallback(function(){
     setUserMenuToggle(prevUserMenuToggle => !prevUserMenuToggle);
@@ -15,10 +25,6 @@ function FramePage(props) {
   const handleSearchTextChange = useCallback(function(value){
     setSearchValue(value);
     setSearchResultsVisible(value.length > 0);
-  }, []);
-
-  const action = useCallback(function(value){
-    console.log(value);
   }, []);
 
   const handleNavigationToggle = useCallback(function(){
@@ -52,11 +58,7 @@ function FramePage(props) {
 
   const searchResultsMarkUp = (
     <ActionList 
-      items={[
-        { content: 'Option1', onAction: action },
-        { content: 'Option2' },
-        { content: 'Option 3'}
-      ]}
+      items={ actionListItems }
     />
   );
 

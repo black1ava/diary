@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import FramePage from './FramePage';
 import axios from 'axios';
-import _DiaryList from './diaries/Diary_List'
+import DiaryList from './diaries/Diary_List'
 import { Card } from '@shopify/polaris'
 
 function _Diary() {
@@ -19,7 +19,7 @@ function _Diary() {
 
   const diaryPage =  (
     <Card>
-      { diary && <_DiaryList key={ diary._id} diary={ diary }/> }
+      { diary && <DiaryList key={ diary._id} diary={ diary }/> }
     </Card>
   );
 

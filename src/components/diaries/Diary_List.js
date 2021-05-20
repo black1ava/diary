@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card } from '@shopify/polaris';
 
-function _DiaryList(props) {
+function Diary_List(props) {
   return (
     <div>
       <Card.Section 
@@ -13,4 +13,4 @@ function _DiaryList(props) {
   )
 }
 
-export default _DiaryList
+export default Diary_List;

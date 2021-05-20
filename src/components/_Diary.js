@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import FramePage from './FramePage';
 import axios from 'axios';
-import Diary from './diaries/DiaryList'
+import _DiaryList from './diaries/_DiaryList'
 import { Card } from '@shopify/polaris'
 
 function _Diary() {
@@ -10,7 +10,7 @@ function _Diary() {
   const [diary, setDiary] = useState(null);
 
   useEffect(function(){
-    axios.get(`http://localhost:4000/v1/getDiary/${ title }`)
+    axios.get(`https://diary-api23.herokuapp.com/v1/getDiary/${ title }`)
       .then(response => {
         setDiary(response.data);
       })
@@ -19,7 +19,7 @@ function _Diary() {
 
   const diaryPage =  (
     <Card>
-      { diary && <Diary key={ diary._id} diary={ diary } button={ false }/> }
+      { diary && <_DiaryList key={ diary._id} diary={ diary }/> }
     </Card>
   );
 

@@ -11,7 +11,7 @@ function FramePage(props) {
   const [actionListItems, setActionListItems] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:4000/v1/getDiaries')
+    axios.get('https://diary-api23.herokuapp.com/v1/getDiaries')
       .then(response => {
         response.data.forEach(d => setActionListItems(items => [...items, { content: d.title, url: `/diary/${ d.title }` } ] ));
       })

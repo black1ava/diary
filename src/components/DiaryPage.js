@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Layout, Card, Form, FormLayout, TextField, Button, Toast, ButtonGroup, Modal } from '@shopify/polaris';
+import { Layout, Card, Form, FormLayout, TextField, Button, Toast, ButtonGroup, Modal, TextContainer } from '@shopify/polaris';
 import axios from 'axios';
 import FramePage from './FramePage';
 
@@ -11,7 +11,7 @@ function DiaryPage() {
   const [discardActive, setDiscardActive] = useState(true);
 
   useEffect(function(){
-    setDiscardActive(title.length === 0 && description.length === 0);
+    setDiscardActive(title.length === 0 || description.length === 0);
   }, [title, description]);
 
   const handleTitleChange = useCallback(function(value){
@@ -25,7 +25,7 @@ function DiaryPage() {
   const handleToastActive = useCallback(() => setToastActive(active => !active), []);
 
   const handleSubmit = useCallback(function(){
-    axios.post('http://localhost:4000/v1/postDiary', {title, description})
+    axios.post('https://diary-api23.herokuapp.com/v1/postDiary', {title, description})
       .then(response => console.log(response))
       .catch(err => console.error(err));
 
@@ -49,7 +49,7 @@ function DiaryPage() {
       activator={ modalActivator }
       open={ modalActive }
       onClose={ handleModalActivate}
-      title="The diary won't be saved. Are you sure want to discard?"
+      title="Are you sure want to discard?"
       primaryAction={{
         content: 'Discard',
         destructive: true,
@@ -65,8 +65,11 @@ function DiaryPage() {
           onAction: handleModalActivate
         }
       ]}
+      sectioned
     >
-
+      <TextContainer>
+        <p>The diary won't be saved. </p>
+      </TextContainer>
     </Modal>
   );
 
@@ -83,7 +86,7 @@ function DiaryPage() {
               <TextField value={ description } placeholder="Description" multiline={ 10 } onChange={ handleDescriptionChange }/>   
               { toastMarkUp }
               <ButtonGroup>
-                <Button submit primary>Save Diary</Button>
+                <Button submit primary disabled={ discardActive }>Save Diary</Button>
                 { modalMarkUp }
               </ButtonGroup>
             </FormLayout>

@@ -10,7 +10,7 @@ function MainPage() {
   const [diaries, setDiaries] = useState([]);
 
   const fetchDiary = useCallback(() => {
-    axios.get('http://localhost:4000/v1/getDiaries')
+    axios.get('https://diary-api23.herokuapp.com/v1/getDiaries')
       .then(response => {
         setDiaries(response.data.map(d => ({...d, edit: false })));
       })
@@ -22,7 +22,7 @@ function MainPage() {
   }, [fetchDiary]);
 
   const deleteDiary = useCallback(id => {
-    axios.delete('http://localhost:4000/v1/deleteDiary', { data: { id }})
+    axios.delete('https://diary-api23.herokuapp.com/v1/deleteDiary', { data: { id }})
       .then(response => console.log(response.data))
       .then(() => {
         fetchDiary();
@@ -43,7 +43,7 @@ function MainPage() {
   }, [diaries]);
 
   const handleSumbitChangeDiary = useCallback((id, title, description) => {
-    axios.post('http://localhost:4000/v1/updateDiary', { id, title, description })
+    axios.post('https://diary-api23.herokuapp.com/v1/updateDiary', { id, title, description })
       .then(response => console.log(response.data))
       .then(() => fetchDiary())
       .catch(err => console.error(err));

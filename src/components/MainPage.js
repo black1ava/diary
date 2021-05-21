@@ -3,17 +3,21 @@ import { EmptyState, Card } from '@shopify/polaris';
 import FramePage from './FramePage';
 import DiaryList from './diaries/DiaryList'
 import axios from 'axios';
+import Skeleton from './skeleton/Skeleton';
 
 export const DiaryContext = createContext();
 
 function MainPage() {
   const [diaries, setDiaries] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchDiary = useCallback(() => {
+    setIsLoading(true);
     axios.get('https://diary-api23.herokuapp.com/v1/getDiaries')
       .then(response => {
         setDiaries(response.data.map(d => ({...d, edit: false })));
       })
+      .then(() => setIsLoading(false))
       .catch(err => console.error(err))
   }, []);
 
@@ -76,7 +80,7 @@ function MainPage() {
 
   return (
     <div>
-      <FramePage component={ mainPageMarkUp }/>
+      <FramePage component={ isLoading ? <Skeleton /> : mainPageMarkUp }/>
     </div>
   )
 }

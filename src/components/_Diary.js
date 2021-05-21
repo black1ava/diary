@@ -4,16 +4,20 @@ import FramePage from './FramePage';
 import axios from 'axios';
 import DiaryList from './diaries/Diary_List'
 import { Card } from '@shopify/polaris'
+import SkeletonDiary from './skeleton/SkeletonDiary'
 
 function _Diary() {
   const { title } = useParams();
   const [diary, setDiary] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(function(){
+    setIsLoading(true);
     axios.get(`https://diary-api23.herokuapp.com/v1/getDiary/${ title }`)
       .then(response => {
         setDiary(response.data);
       })
+      .then(() => setIsLoading(false))
       .catch(err => console.error(err));
   }, [title]);
 
@@ -25,7 +29,7 @@ function _Diary() {
 
   return (
     <div>
-      <FramePage component={ diaryPage } />
+      <FramePage component={ isLoading ? <SkeletonDiary /> : diaryPage } />
     </div>
   )
 }

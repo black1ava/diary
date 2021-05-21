@@ -50,8 +50,9 @@ function DiaryList(props) {
     diaryContext.edit(props.diary._id);
     setTitle(props.diary.title);
     setDescription(props.diary.description);
-    handleDiscardModalToggle();
-  }, [diaryContext, props, handleDiscardModalToggle]);
+    setChange(true);
+    setDiscardModalActive(false);
+  }, [diaryContext, props]);
 
   const discardButton = !change ? (
     <Modal
@@ -84,7 +85,8 @@ function DiaryList(props) {
       actions={ props.button && [ 
         { 
           content: 'more', 
-          onAction: handleClick
+          onAction: handleClick,
+          disabled: props.diary.description.length < 600
         },
         {
           icon: EditMinor,

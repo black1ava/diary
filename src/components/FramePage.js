@@ -4,6 +4,7 @@ import { HomeMajor, ComposeMajor } from '@shopify/polaris-icons';
 import axios from 'axios';
 
 function FramePage(props) {
+
   const [userMenuToggle, setUserMenuToggle] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [searchResultsVisible, setSearchResultsVisible] = useState(false);
@@ -17,61 +18,85 @@ function FramePage(props) {
 
     axios.get('https://diary-api23.herokuapp.com/v1/getDiaries')
       .then(response => {
-        response.data.forEach(d => setActionListItems(items => [...items, { content: d.title, url: `/diary/${ d._id }` } ] ));
+
+        response.data.forEach(d => setActionListItems(items => {
+
+          return ([...items, { content: d.title, url: `/diary/${ d._id }` }]);
+
+        }));
       })
       .catch(err => console.error(err));
+
   }, []);
+
 
   const handleUserMenuToggle = useCallback(function(){
     setUserMenuToggle(prevUserMenuToggle => !prevUserMenuToggle);
   }, []);
 
+
   const handleSearchTextChange = useCallback(function(value){
+
     setSearchValue(value);
     setSearchResultsVisible(value.length > 0);
+
   }, []);
+
 
   const handleNavigationToggle = useCallback(function(){
     setMobileNavigationToggle(prevMobileNavigationToggle => !prevMobileNavigationToggle);
   }, []);
 
+
   const themeMode = lightMode ? 'light' : 'dark';
-  const themeName = lightMode ? 'Dark mode' : 'Light mode'
+  const themeName = lightMode ? 'Dark mode' : 'Light mode';
+
 
   const handleThemeModeChange = useCallback(() => setLightMode(prevState => {
+
     localStorage.setItem('lightTheme', !prevState);
     return !prevState;
+
   }), []);
 
   const userMenuMarkUp = (
-    <TopBar.UserMenu 
-      name="Tharath"
-      initials="T"
-      actions={[
-        {
-          items: [{ content: themeName, onAction: handleThemeModeChange }]
-        }
-      ]}
-      open={ userMenuToggle }
-      onToggle={ handleUserMenuToggle }
-    />
+
+    <div id="user">
+      <TopBar.UserMenu 
+        name="Tharath"
+        initials="T"
+        actions={[
+          {
+            items: [{ content: themeName, onAction: handleThemeModeChange, id: "theme" }]
+          }
+        ]}
+        open={ userMenuToggle }
+        onToggle={ handleUserMenuToggle }
+      />
+    </div>
+
   );
 
   const searchFieldMarkUp = (
+
     <TopBar.SearchField 
       value={ searchValue }
       placeholder="Search"
       onChange={ handleSearchTextChange }
     />
+
   );
 
   const searchResultsMarkUp = (
+
     <ActionList 
       items={ actionListItems }
     />
+
   );
 
   const topBarMarkUp = (
+
     <TopBar 
       showNavigationToggle
       userMenu={ userMenuMarkUp }
@@ -80,9 +105,11 @@ function FramePage(props) {
       searchResultsVisible={ searchResultsVisible }
       onNavigationToggle={handleNavigationToggle}
     />
+
   );
 
   const navigationMarkUp = (
+
     <Navigation location="/diary">
       <Navigation.Section 
         items={[
@@ -101,9 +128,11 @@ function FramePage(props) {
         ]}
       />
     </Navigation>
+
   );
 
   return (
+
     <div>
       <ThemeProvider theme={{ colorScheme: themeMode }}>
         <Frame
@@ -116,6 +145,7 @@ function FramePage(props) {
         </Frame>
       </ThemeProvider>
     </div>
+    
   )
 }
 

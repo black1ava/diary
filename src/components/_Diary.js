@@ -7,24 +7,28 @@ import { Card } from '@shopify/polaris'
 import SkeletonDiary from './skeleton/SkeletonDiary'
 
 function _Diary() {
+
   const { title } = useParams();
   const [diary, setDiary] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(function(){
+
     setIsLoading(true);
+
     axios.get(`https://diary-api23.herokuapp.com/v1/getDiary/${ title }`)
-      .then(response => {
-        setDiary(response.data);
-      })
+      .then(response => setDiary(response.data))
       .then(() => setIsLoading(false))
       .catch(err => console.error(err));
+
   }, [title]);
 
   const diaryPage =  (
+
     <Card>
       { diary && <DiaryList key={ diary._id} diary={ diary }/> }
     </Card>
+    
   );
 
   return (

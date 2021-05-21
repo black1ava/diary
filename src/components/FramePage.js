@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react'
-import { Frame, TopBar, ActionList, Navigation } from '@shopify/polaris';
+import { Frame, TopBar, ActionList, Navigation, ThemeProvider } from '@shopify/polaris';
 import { HomeMajor, ComposeMajor } from '@shopify/polaris-icons';
 import axios from 'axios';
 
@@ -9,8 +9,12 @@ function FramePage(props) {
   const [searchResultsVisible, setSearchResultsVisible] = useState(false);
   const [mobileNavigationToggle, setMobileNavigationToggle] = useState(false);
   const [actionListItems, setActionListItems] = useState([]);
+  const [lightMode, setLightMode] = useState(true);
 
   useEffect(() => {
+
+    setLightMode(JSON.parse(localStorage.getItem('lightTheme')) ?? true);
+
     axios.get('https://diary-api23.herokuapp.com/v1/getDiaries')
       .then(response => {
         response.data.forEach(d => setActionListItems(items => [...items, { content: d.title, url: `/diary/${ d._id }` } ] ));
@@ -31,16 +35,21 @@ function FramePage(props) {
     setMobileNavigationToggle(prevMobileNavigationToggle => !prevMobileNavigationToggle);
   }, []);
 
+  const themeMode = lightMode ? 'light' : 'dark';
+  const themeName = lightMode ? 'Dark mode' : 'Light mode'
+
+  const handleThemeModeChange = useCallback(() => setLightMode(prevState => {
+    localStorage.setItem('lightTheme', !prevState);
+    return !prevState;
+  }), []);
+
   const userMenuMarkUp = (
     <TopBar.UserMenu 
       name="Tharath"
       initials="T"
       actions={[
         {
-          items: [{ content: 'Action 1'}, { content: 'Action 2'}]
-        },
-        { 
-          items: [{ content: 'Other Actions'}] 
+          items: [{ content: themeName, onAction: handleThemeModeChange }]
         }
       ]}
       open={ userMenuToggle }
@@ -81,12 +90,13 @@ function FramePage(props) {
             url: '/',
             label: 'Home',
             icon: HomeMajor,
-            selected: false
+            selected: props.home || false
           },
           {
             url: '/diaries',
             label: 'Write diary',
-            icon: ComposeMajor
+            icon: ComposeMajor,
+            selected: props.diary || false
           }
         ]}
       />
@@ -95,14 +105,16 @@ function FramePage(props) {
 
   return (
     <div>
-      <Frame
-        topBar={ topBarMarkUp }
-        navigation={ navigationMarkUp }
-        showMobileNavigation={ mobileNavigationToggle }
-        onNavigationDismiss={ handleNavigationToggle }
-      >
-        {props.component}
-      </Frame>
+      <ThemeProvider theme={{ colorScheme: themeMode }}>
+        <Frame
+          topBar={ topBarMarkUp }
+          navigation={ navigationMarkUp }
+          showMobileNavigation={ mobileNavigationToggle }
+          onNavigationDismiss={ handleNavigationToggle }
+        >
+          {props.component}
+        </Frame>
+      </ThemeProvider>
     </div>
   )
 }

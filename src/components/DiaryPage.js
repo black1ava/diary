@@ -98,7 +98,7 @@ function DiaryPage() {
 
   return (
     <div>
-      <FramePage component={ diariesPageMarkUp }/>
+      <FramePage component={ diariesPageMarkUp } diary={ true }/>
     </div>
   )
 }

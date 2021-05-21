@@ -80,7 +80,7 @@ function MainPage() {
 
   return (
     <div>
-      <FramePage component={ isLoading ? <Skeleton /> : mainPageMarkUp }/>
+      <FramePage component={ isLoading ? <Skeleton /> : mainPageMarkUp } home={ true }/>
     </div>
   )
 }
